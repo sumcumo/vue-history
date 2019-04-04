@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/sumcumo/vue-history.svg?style=svg)](https://circleci.com/gh/sumcumo/vue-history)
+
 # VueHistory
 
 The purpose of VueHistory is to keep track of what's happening inside Vue components. It logs all method calls and keeps track of **nested method calls, errors, asynchronous processes and timings**.
