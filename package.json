@@ -1,0 +1,65 @@
+{
+  "name": "@sum.cumo/vue-history",
+  "version": "1.0.0",
+  "description": "Deep tracking of Vue.js method invocations",
+  "main": "dist/vue-history.umd.js",
+  "module": "dist/vue-history.esm.js",
+  "unpkg": "dist/vue-history.min.js",
+  "typings": "dist/ems/index.d.ts",
+  "keywords": [
+    "vue",
+    "vuex",
+    "state",
+    "management",
+    "mvc",
+    "model",
+    "history",
+    "component",
+    "deep"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sumcumo/vue-history.git"
+  },
+  "homepage": "https://github.com/sumcumo/vue-history",
+  "scripts": {
+    "test": "jest --coverage=false",
+    "test.coverage": "jest",
+    "release": "standard-version && git push --follow-tags origin master",
+    "lint": "tslint -p ./tsconfig.json",
+    "build": "npm run build:clear && tsc && npm run build:browser && npm run build:es && npm run build:umd",
+    "build:clear": "rm -rf ./dist",
+    "build:browser": "rollup --config build/rollup.config.browser.js",
+    "build:es": "rollup --config build/rollup.config.es.js",
+    "build:umd": "rollup --config build/rollup.config.umd.js",
+    "generate": "npm run test.coverage && npm run lint && npm run build",
+    "prepack": "npm run generate",
+    "prepublishOnly": "npm run generate"
+  },
+  "author": "sum.cumo GmbH",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@commitlint/cli": "7.5.2",
+    "@commitlint/config-conventional": "7.5.0",
+    "@types/jest": "24.0.6",
+    "@types/json-stringify-safe": "5.0.0",
+    "@vue/test-utils": "1.0.0-beta.29",
+    "husky": "1.3.1",
+    "jest": "24.1.0",
+    "rollup": "1.2.2",
+    "rollup-plugin-commonjs": "9.2.0",
+    "rollup-plugin-node-resolve": "4.0.0",
+    "rollup-plugin-uglify": "6.0.2",
+    "standard-version": "5.0.0",
+    "ts-jest": "24.0.0",
+    "tslint": "5.12.1",
+    "tslint-config-airbnb": "5.11.1",
+    "typescript": "3.3.3",
+    "uglify-es": "3.3.9",
+    "vue": "2.6.6",
+    "vue-template-compiler": "2.6.6"
+  },
+  "dependencies": {
+    "json-stringify-safe": "^5.0.1"
+  }
+}
