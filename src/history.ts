@@ -21,18 +21,30 @@ type EventState = keyof typeof STATE_COLORS
 
 export default class History {
 
-  public static getEventState(event: Event): { state: EventState, message: string[] } {
-    const message: any[] = []
-    let state: EventState
+  public static getEventAsyncDescription(event: Event) {
+    if (!event.async) {
+      return null
+    }
 
-    if (event.async) {
-      if (event.done) {
-        const ms = event.done.getTime() - event.timestamp.getTime()
-        message.push(`async (took ${ms}ms)`)
-      } else {
-        const ms = new Date().getTime() - event.timestamp.getTime()
-        message.push(`pending (took ${ms}ms so far)`)
-      }
+    const start = event.timestamp.getTime()
+
+    if (event.done) {
+      const ms = event.done.getTime() - start
+      return `async (took ${ms}ms)`
+    }
+
+    const ms = new Date().getTime() - start
+    return `pending (took ${ms}ms so far)`
+  }
+
+  public static getEventState(event: Event): { state: EventState, message: string[] } {
+    let state: EventState
+    const message: any[] = []
+
+    const asyncDescription = History.getEventAsyncDescription(event)
+
+    if (asyncDescription) {
+      message.push(asyncDescription)
     }
 
     if (event.error) {
@@ -47,20 +59,13 @@ export default class History {
     return { state, message }
   }
 
-  public static logEventToConsole(
-    event: Event,
-    userOptions: Partial<PrintOptions> = {},
-    depth = 0,
-  ) {
-    const options = Object.assign({}, DEFAULT_PRINT_OPTIONS, userOptions)
-    const time = event.timestamp.toISOString().substr(11)
-
+  public static createLogStatement({ event, time }: { event: Event, time: string | boolean }): string[] {
     const { state, message } = History.getEventState(event)
     const color = STATE_COLORS[state]
 
-    const logParams: string[] = [
+    return [
       [
-        options.time && time,
+        time,
         `%c${event.namespace}%c${event.callId}`,
       ].filter(Boolean).join(' '),
       `color: #fff; background: ${STATE_COLORS.neutral}; padding: 1px 4px; border-radius: 3px 0 0 3px;`,
@@ -69,11 +74,25 @@ export default class History {
       event.payload,
       ...message,
     ]
+  }
+
+  public static logEventToConsole(
+    event: Event,
+    userOptions: Partial<PrintOptions> = {},
+    depth = 0,
+  ) {
+    const options = Object.assign({}, DEFAULT_PRINT_OPTIONS, userOptions)
+    const time = event.timestamp.toISOString().substr(11)
 
     const logSubEvents = () => {
       event.subEvents.forEach(
         subEvent => History.logEventToConsole(subEvent, options, depth + 1))
     }
+
+    const logParams = History.createLogStatement({
+      time: options.time && time,
+      event,
+    })
 
     if (event.subEvents.length !== 0 && options.hierarchical) {
       const fn = options.collapse ? console.groupCollapsed : console.group

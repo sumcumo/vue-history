@@ -13,6 +13,40 @@ const DEFAULT_INSTALL_OPTIONS: Partial<HistoryInstallOptions> = {
   onEvent: (_: Event) => null,
 }
 
+function setupProxies(this: VueWithHistory) {
+  const methods: ComponentOptions<VueWithHistory>['methods'] = {}
+
+  // wrap all methods
+  Object
+    .keys(this.$options.methods || {})
+    .forEach((methodKey) => {
+      methods[methodKey] = this.$history.proxyMethod(
+        methodKey,
+        this.$history.originalMethods[methodKey],
+      ) as any
+    })
+
+  this.$options.methods = methods;
+
+  // override $set to ease third party integration
+  (this as any).$set = this.$history.proxyMethod('$set', this.$set)
+}
+
+function setupWatcher(this: VueWithHistory) {
+  // watch data for untracked changes
+  Object.keys(this.$data).forEach((key) => {
+    this.$watch(
+      key,
+      () => {
+        if (this.$history.inCallback === 0) {
+          this.$history.checkForDataChanges({ type: '$watch' })
+        }
+      },
+      { deep: true },
+    )
+  })
+}
+
 export default {
   install(vue, inputInstallOptions = {}) {
     /* istanbul ignore if */
@@ -37,44 +71,16 @@ export default {
           // create local history
           this.$history = new ComponentHistory(installOptions, this)
 
-          const methods: ComponentOptions<VueWithHistory>['methods'] = {}
-
-          // wrap all methods
-          Object
-            .keys(this.$options.methods || {})
-            .forEach((methodKey) => {
-              methods[methodKey] = this.$history.proxyMethod(
-                methodKey,
-                this.$history.originalMethods[methodKey],
-              ) as any
-            })
-
-          this.$options.methods = methods;
-
-          // override $set to ease third party integration
-          (this as any).$set = this.$history.proxyMethod('$set', this.$set)
+          setupProxies.call(this)
         },
 
         created(this: VueWithHistory) {
-          if (!this.$history) {
-            return
-          }
+          if (this.$history) {
+            this.$history.created()
 
-          this.$history.created()
-
-          // watch data for untracked changes
-          if (installOptions.strict) {
-            Object.keys(this.$data).forEach((key) => {
-              this.$watch(
-                key,
-                () => {
-                  if (this.$history.inCallback === 0) {
-                    this.$history.checkForDataChanges({ type: '$watch' })
-                  }
-                },
-                { deep: true },
-              )
-            })
+            if (installOptions.strict) {
+              setupWatcher.call(this)
+            }
           }
         },
       },
