@@ -21,18 +21,30 @@ type EventState = keyof typeof STATE_COLORS
 
 export default class History {
 
-  public static getEventState(event: Event): { state: EventState, message: string[] } {
-    const message: any[] = []
-    let state: EventState
+  public static getEventAsyncDescription(event: Event) {
+    if (!event.async) {
+      return null
+    }
 
-    if (event.async) {
-      if (event.done) {
-        const ms = event.done.getTime() - event.timestamp.getTime()
-        message.push(`async (took ${ms}ms)`)
-      } else {
-        const ms = new Date().getTime() - event.timestamp.getTime()
-        message.push(`pending (took ${ms}ms so far)`)
-      }
+    const start = event.timestamp.getTime()
+
+    if (event.done) {
+      const ms = event.done.getTime() - start
+      return `async (took ${ms}ms)`
+    }
+
+    const ms = new Date().getTime() - start
+    return `pending (took ${ms}ms so far)`
+  }
+
+  public static getEventState(event: Event): { state: EventState, message: string[] } {
+    let state: EventState
+    const message: any[] = []
+
+    const asyncDescription = History.getEventAsyncDescription(event)
+
+    if (asyncDescription) {
+      message.push(asyncDescription)
     }
 
     if (event.error) {
@@ -47,7 +59,7 @@ export default class History {
     return { state, message }
   }
 
-  public static createLogStatement({ event, time }: { event: Event, time: string | boolean }): string[] {
+  public static createLogStatement({ event, time }: { event: Event, time: string | boolean }): string[] {
     const { state, message } = History.getEventState(event)
     const color = STATE_COLORS[state]
 
