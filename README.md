@@ -1,4 +1,6 @@
 [![CircleCI](https://circleci.com/gh/sumcumo/vue-history.svg?style=svg)](https://circleci.com/gh/sumcumo/vue-history)
+[![Maintainability](https://api.codeclimate.com/v1/badges/707f3c462250d4a6b526/maintainability)](https://codeclimate.com/github/sumcumo/vue-history/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/707f3c462250d4a6b526/test_coverage)](https://codeclimate.com/github/sumcumo/vue-history/test_coverage)
 
 # VueHistory
 
