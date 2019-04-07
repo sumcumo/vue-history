@@ -14,10 +14,12 @@ describe('History', () => {
     const eventStore = { async: true } as any
     const eventNoStore = { async: false } as any
     const history = new History({ filter: el => !!el.async })
-    history.push(eventStore)
-    history.push(eventNoStore)
+    const onPushed = jest.fn()
+    history.push(eventStore, onPushed)
+    history.push(eventNoStore, onPushed)
     expect(history.events).toHaveLength(1)
     expect(history.events[0]).toBe(eventStore)
+    expect(onPushed).toBeCalledTimes(1)
   })
 
   it('should print all recieved events', () => {
