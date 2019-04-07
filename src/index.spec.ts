@@ -96,7 +96,7 @@ const SomeUntrackedComponent = {
   },
 }
 
-describe('vue-component-history', async () => {
+describe('vue-component-history', () => {
   let wrapper: any
   let wrapperUntracked: any
 
