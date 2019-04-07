@@ -21,7 +21,7 @@ Whats displayed in the screenshot is VueHistory in action with an instant feed t
 ## Install
 
 ```javascript
-import VueHistory from 'vue-history'
+import VueHistory from '@sum.cumo/vue-history'
 
 Vue.use(VueHistory, {
   // in strict mode, VueHistory will watch for untracked data-changes
