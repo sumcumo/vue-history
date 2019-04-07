@@ -1,12 +1,12 @@
 // import * as serialize is incompatible with compilation to ESM -> UMD
 // https://github.com/rollup/rollup-plugin-commonjs/issues/157#issuecomment-284858177
 import { getSerialize } from 'json-stringify-safe'
+import History from './history'
 import {
   Event,
   HistoryInstallOptions,
   VueWithHistory,
 } from './types'
-import History from './history'
 
 const stringify = (val: any) => typeof val === 'string' ? val : JSON.stringify(val, getSerialize(null, undefined))
 
@@ -26,10 +26,11 @@ export default class ComponentHistory extends History {
   }
 
   push(event: Event) {
-    super.push(event)
-    if (this.vm.$globalHistory) {
-      this.vm.$globalHistory.push(event)
-    }
+    super.push(event, () => {
+      if (this.vm.$globalHistory) {
+        this.vm.$globalHistory.push(event)
+      }
+    })
   }
 
   created() {

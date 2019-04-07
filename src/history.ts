@@ -114,11 +114,12 @@ export default class History {
   constructor(protected options: HistoryInstallOptions) {
   }
 
-  push(event: Event) {
+  push(event: Event, onPushed?: Function) {
     if (this.options.filter && !this.options.filter(event)) {
       return
     }
     this.items.push(event)
+    onPushed && onPushed()
   }
 
   print(userOptions: Partial<PrintOptions> = {}) {
