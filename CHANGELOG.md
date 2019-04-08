@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * do not send filtered events to feed ([0c67bd8](https://github.com/sumcumo/vue-history/commit/0c67bd8))
-* lint spec files excluded by tsconfig ([75fca61](https://github.com/sumcumo/vue-history/commit/75fca61)), closes [/github.com/palantir/tslint/issues/2024#issuecomment-272374775](https://github.com//github.com/palantir/tslint/issues/2024/issues/issuecomment-272374775)
+* lint spec files excluded by tsconfig ([75fca61](https://github.com/sumcumo/vue-history/commit/75fca61))
 
 
 
