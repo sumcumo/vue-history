@@ -1,9 +1,9 @@
+import History from './history'
 import {
   Event,
   HistoryInstallOptions,
   ShouldFeedCallback,
 } from './types'
-import History from './history'
 
 export default class GlobalHistory extends History {
   sendToFeed: ShouldFeedCallback
@@ -18,13 +18,14 @@ export default class GlobalHistory extends History {
   }
 
   push(event: Event) {
-    super.push(event)
-    if (this.options.onEvent) {
-      this.options.onEvent(event)
-    }
-    if (this.options.feed) {
-      this.logNewEvent(event)
-    }
+    super.push(event, () => {
+      if (this.options.onEvent) {
+        this.options.onEvent(event)
+      }
+      if (this.options.feed) {
+        this.logNewEvent(event)
+      }
+    })
   }
 
   logNewEvent(event: Event) {

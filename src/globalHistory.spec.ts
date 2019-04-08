@@ -1,5 +1,5 @@
-import History from './history'
 import GlobalHistory from './globalHistory'
+import History from './history'
 import { HistoryInstallOptions } from './types'
 
 function flushPromises() {
@@ -36,15 +36,20 @@ describe('GlobalHistory', () => {
 
   function checkFeedCalls(
     describe: string,
-    { feeds, event, calls }: { feeds: HistoryInstallOptions['feed'][], event: any, calls: number }) {
+    { feeds, event, calls, filter }: {
+      feeds: HistoryInstallOptions['feed'][],
+      event: any,
+      filter?: HistoryInstallOptions['filter'],
+      calls: number,
+    }) {
     it(describe, async () => {
       expect.assertions(feeds.length * (1 + calls))
       for (const feed of feeds) {
-        prepareHistory({ feed })
+        prepareHistory({ feed, filter })
         history.push(event)
         await flushPromises()
         expect(logMock).toHaveBeenCalledTimes(calls)
-        for (let i = 1; i <= calls; i++) {
+        for (let i = 1; i <= calls; i += 1) {
           expect(logMock).toHaveBeenNthCalledWith(i, event)
         }
       }
@@ -102,6 +107,26 @@ describe('GlobalHistory', () => {
       feeds: [true],
       event: { async: true, promise: Promise.reject() },
       calls: 2,
+    },
+  )
+
+  checkFeedCalls(
+    'should not send filtered events',
+    {
+      feeds: [true],
+      event: { label: 'ignore' },
+      calls: 0,
+      filter: (event: any) => event.label !== 'ignore',
+    },
+  )
+
+  checkFeedCalls(
+    'should send non-filtered events',
+    {
+      feeds: [true],
+      event: { label: 'include' },
+      calls: 1,
+      filter: (event: any) => event.label !== 'ignore',
     },
   )
 

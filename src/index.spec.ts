@@ -2,7 +2,8 @@ import {
   createLocalVue,
   mount,
 } from '@vue/test-utils'
-import History from './history'
+import ComponentHistory from './componentHistory'
+import GlobalHistory from './globalHistory'
 import VueHistory from './index'
 
 function flushPromises() {
@@ -96,7 +97,7 @@ const SomeUntrackedComponent = {
   },
 }
 
-describe('vue-component-history', async () => {
+describe('vue-component-history', () => {
   let wrapper: any
   let wrapperUntracked: any
 
@@ -123,9 +124,19 @@ describe('vue-component-history', async () => {
     global.console.error = storedError
   })
 
-  it('should add the $globalHistory onto every component and $history on tracked components', () => {
-    expect(wrapper.vm.$globalHistory).toBeInstanceOf(History)
-    expect(wrapper.vm.$history).toBeInstanceOf(History)
+  it('should add the $globalHistory and $history on tracked components', () => {
+    expect(wrapper.vm.$globalHistory).toBeInstanceOf(GlobalHistory)
+    expect(wrapper.vm.$history).toBeInstanceOf(ComponentHistory)
+
+    // methodless
+    wrapper = mount({ history: true } as any, { localVue })
+    expect(wrapper.vm.$globalHistory).toBeInstanceOf(GlobalHistory)
+    expect(wrapper.vm.$history).toBeInstanceOf(ComponentHistory)
+
+    // untracked
+    wrapper = mount({} as any, { localVue })
+    expect(wrapper.vm.$globalHistory).toBeInstanceOf(GlobalHistory)
+    expect(wrapper.vm.$history).not.toBeInstanceOf(ComponentHistory)
   })
 
   it('should track synchronous updates of known methods', () => {
