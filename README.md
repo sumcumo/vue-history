@@ -3,15 +3,15 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/707f3c462250d4a6b526/test_coverage)](https://codeclimate.com/github/sumcumo/vue-history/test_coverage)
 [![Depfu](https://badges.depfu.com/badges/2947022c3ca8d859d2d40a6ae861f7c3/count.svg)](https://depfu.com/github/sumcumo/vue-history?project_id=7632)
 
-# VueHistory
+# Vue History
 
-The purpose of VueHistory is to keep track of what's happening inside Vue components. It logs all method calls and keeps track of **nested method calls, errors, asynchronous processes and timings**.
+The purpose of Vue History is to keep track of what's happening inside Vue components. It logs all method calls and keeps track of **nested method calls, errors, asynchronous processes and timings**.
 
 The plugin was created alongside [Vue States](https://github.com/sumcumo/vue-states), but can be applied to any Vue component.
 
 ![vue-history](./docs/screenshot-code-with-log.png)
 
-Whats displayed in the screenshot is VueHistory in action with an instant feed to the console.
+Whats displayed in the screenshot is Vue History in action with an instant feed to the console.
 
 - the status of each call: `pending | doneOk | doneErrored`
 - nested calls: `onCheckoutSuccess` beeing called by `checkout`
@@ -25,7 +25,7 @@ Whats displayed in the screenshot is VueHistory in action with an instant feed t
 import VueHistory from '@sum.cumo/vue-history'
 
 Vue.use(VueHistory, {
-  // in strict mode, VueHistory will watch for untracked data-changes
+  // in strict mode, Vue History will watch for untracked data-changes
   // you might want to disable this expensive process in production
   strict: process.env.NODE_ENV === 'development', // default: true
 })
@@ -54,7 +54,7 @@ export default {
 
 ## Print
 
-VueHistory adds a `$globalHistory` property onto every component. 
+Vue History adds a `$globalHistory` property onto every component. 
 You can use this to get a reference to the GlobalHistory.
 
 ```javascript
