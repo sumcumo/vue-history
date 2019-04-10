@@ -7,7 +7,7 @@
 
 The purpose of VueHistory is to keep track of what's happening inside Vue components. It logs all method calls and keeps track of **nested method calls, errors, asynchronous processes and timings**.
 
-The plugin was created alongside [vue-models](https://github.com/sumcumo/vue-models), but can be applied to any Vue component.
+The plugin was created alongside [Vue States](https://github.com/sumcumo/vue-states), but can be applied to any Vue component.
 
 ![vue-history](./docs/screenshot-code-with-log.png)
 
