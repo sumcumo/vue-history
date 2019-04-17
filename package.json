@@ -1,6 +1,6 @@
 {
   "name": "@sum.cumo/vue-history",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Deep tracking of Vue.js method invocations",
   "main": "dist/vue-history.umd.js",
   "module": "dist/vue-history.esm.js",
