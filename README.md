@@ -9,6 +9,8 @@ The purpose of Vue History is to keep track of what's happening inside Vue compo
 
 The plugin was created alongside [Vue States](https://github.com/sumcumo/vue-states), but can be applied to any Vue component.
 
+Checkout the examples at https://github.com/JohannesLamberts/vue-states-examples.
+
 ![vue-history](./docs/screenshot-code-with-log.png)
 
 Whats displayed in the screenshot is Vue History in action with an instant feed to the console.
