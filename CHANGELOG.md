@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/sumcumo/vue-history/compare/v1.0.2...v1.0.3) (2019-05-09)
+
+
+### Bug Fixes
+
+* set correct reference to "types" in package.json ([598da76](https://github.com/sumcumo/vue-history/commit/598da76))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/sumcumo/vue-history/compare/v1.0.1...v1.0.2) (2019-04-17)
 
