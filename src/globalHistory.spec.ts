@@ -3,17 +3,18 @@ import History from './history'
 import { HistoryInstallOptions } from './types'
 
 function flushPromises() {
-  return Promise.resolve()
+  return new Promise(resolve => setTimeout(resolve))
 }
 
 describe('GlobalHistory', () => {
   let history: GlobalHistory
-  let logMock: Function
+  let logMock: jest.SpyInstance
 
   function prepareHistory(options?: HistoryInstallOptions) {
-    logMock = jest.fn()
     history = new GlobalHistory(options)
-    History.logEventToConsole = logMock as any
+    logMock = jest.spyOn(History, 'logEventToConsole')
+    logMock.mockClear()
+    logMock.mockImplementation(() => null)
   }
 
   it('should push events to the log', () => {
@@ -34,101 +35,90 @@ describe('GlobalHistory', () => {
     expect(mock).toHaveBeenCalledWith(event)
   })
 
-  function checkFeedCalls(
-    describe: string,
+  async function checkFeedCalls(
     { feeds, event, calls, filter }: {
       feeds: HistoryInstallOptions['feed'][],
       event: any,
       filter?: HistoryInstallOptions['filter'],
       calls: number,
     }) {
-    it(describe, async () => {
-      expect.assertions(feeds.length * (1 + calls))
-      for (const feed of feeds) {
-        prepareHistory({ feed, filter })
-        history.push(event)
-        await flushPromises()
-        expect(logMock).toHaveBeenCalledTimes(calls)
-        for (let i = 1; i <= calls; i += 1) {
-          expect(logMock).toHaveBeenNthCalledWith(i, event)
-        }
+    expect.assertions(feeds.length * (1 + calls))
+    for (const feed of feeds) {
+      prepareHistory({ feed, filter })
+      history.push(event)
+      await flushPromises()
+      expect(logMock).toHaveBeenCalledTimes(calls)
+      for (let i = 1; i <= calls; i += 1) {
+        expect(logMock).toHaveBeenNthCalledWith(i, event)
       }
-    })
+    }
   }
 
-  checkFeedCalls(
-    'should not send events if not active',
+  it('should not send events if not active', () => checkFeedCalls(
     {
       feeds: [false],
       event: {},
       calls: 0,
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should not send non-root-events to the feed',
+  it('should not send non-root-events to the feed', () => checkFeedCalls(
     {
       feeds: [true],
       event: { caller: {} },
       calls: 0,
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should send sync events',
+  it('should send sync events', () => checkFeedCalls(
     {
       feeds: [true],
       event: { async: false },
       calls: 1,
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should only send async end if not activated',
+  it('should only send async end if not activated', () => checkFeedCalls(
     {
       feeds: [{ asyncStart: false }],
       event: { async: true, promise: Promise.resolve() },
       calls: 1, // this is the finished event
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should send async start & end if activated',
+  it('should send async start & end if activated', () => checkFeedCalls(
     {
       feeds: [true, { asyncStart: true }, ((_, async) => true)],
       event: { async: true, promise: Promise.resolve() },
       calls: 2,
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should send rejected promise events',
+  it('should send rejected promise events', () => checkFeedCalls(
     {
       feeds: [true],
       event: { async: true, promise: Promise.reject() },
       calls: 2,
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should not send filtered events',
+  it('should not send filtered events', () => checkFeedCalls(
     {
       feeds: [true],
       event: { label: 'ignore' },
       calls: 0,
       filter: (event: any) => event.label !== 'ignore',
     },
-  )
+  ))
 
-  checkFeedCalls(
-    'should send non-filtered events',
+  it('should send non-filtered events', () => checkFeedCalls(
     {
       feeds: [true],
       event: { label: 'include' },
       calls: 1,
       filter: (event: any) => event.label !== 'ignore',
     },
-  )
+  ))
 
   it('should send async start if activated', async () => {
     const event = { async: true, promise: Promise.resolve() } as any
