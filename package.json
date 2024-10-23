@@ -45,7 +45,7 @@
     "@vue/test-utils": "1.0.3",
     "husky": "4.2.5",
     "jest": "26.1.0",
-    "rollup": "2.22.2",
+    "rollup": "2.79.2",
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-uglify": "6.0.4",
