@@ -55,7 +55,7 @@
     "tslint-config-airbnb": "5.11.2",
     "typescript": "3.9.7",
     "uglify-es": "3.3.9",
-    "vue": "2.6.11",
+    "vue": "3.5.12",
     "vue-template-compiler": "2.6.11"
   },
   "dependencies": {
